@@ -1,0 +1,50 @@
+@model IEnumerable<Tarea_01.Models.GameJamViewModel>
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4><i class="fa fa-users"></i> Personas Registradas al GameJam</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Fecha de Nacimiento</th>
+                        <th>Hobbies</th>
+                        <th>Pago de Matrícula</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var persona in Model)
+                        {
+                            <tr>
+                                <td>@persona.Nombre</td>
+                                <td>@persona.FechaNacimiento.ToString("dd/MM/yyyy")</td>
+                                <td>@persona.Hobbies</td>
+                                <td>
+                                    @if (persona.PagoMatricula == true)
+                                    {
+                                        <span class="badge bg-success">Pagado</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">No Pagado</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center">No hay personas registradas.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
