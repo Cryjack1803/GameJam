@@ -11,6 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<ProductInventoryStore>();
 builder.Services.AddSingleton<SalesHistoryStore>();
+builder.Services.AddSingleton<SalesForecastService>();
 builder.Services.AddScoped<CartSessionService>();
 builder.Services.AddScoped<SalesCheckoutService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

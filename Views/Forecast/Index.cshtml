@@ -1,0 +1,48 @@
+@model Tarea_01.Models.SalesForecastViewModel
+
+@{
+    ViewData["Title"] = "Prediccion de ventas";
+}
+
+<section class="forecast-shell">
+    <div class="forecast-card">
+        <span class="eyebrow">HU 09</span>
+        <h1 class="mt-3">Prediccion de ventas</h1>
+        <p class="message-meta mb-0">
+            Este modulo usa ML.NET para estimar ventas diarias futuras a partir del historial reciente del minimarket.
+        </p>
+    </div>
+
+    <div class="forecast-grid">
+        <article class="forecast-kpi">
+            <span>Ultima venta observada</span>
+            <strong>S/ @Model.LastObservedTotal.ToString("0.00")</strong>
+        </article>
+        <article class="forecast-kpi">
+            <span>Promedio diario</span>
+            <strong>S/ @Model.AverageDailySales.ToString("0.00")</strong>
+        </article>
+        <article class="forecast-kpi">
+            <span>Prediccion manana</span>
+            <strong>S/ @Model.NextDayPrediction.ToString("0.00")</strong>
+        </article>
+    </div>
+
+    <article class="forecast-summary">
+        <h2 class="h3">Horizonte de 7 dias</h2>
+        <div class="forecast-list mt-3">
+            @foreach (var point in Model.ForecastPoints)
+            {
+                <div class="forecast-row">
+                    <div class="d-flex justify-content-between flex-wrap gap-3 align-items-center">
+                        <div>
+                            <strong>@point.Date.ToString("dddd dd/MM")</strong>
+                            <div class="message-meta">Rango estimado: S/ @point.LowerBound.ToString("0.00") - S/ @point.UpperBound.ToString("0.00")</div>
+                        </div>
+                        <span class="forecast-amount">S/ @point.PredictedTotal.ToString("0.00")</span>
+                    </div>
+                </div>
+            }
+        </div>
+    </article>
+</section>

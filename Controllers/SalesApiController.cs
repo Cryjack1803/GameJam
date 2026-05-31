@@ -9,15 +9,18 @@ namespace Tarea_01.Controllers;
 public class SalesApiController : ControllerBase
 {
     private readonly ProductInventoryStore _inventoryStore;
+    private readonly SalesForecastService _salesForecastService;
     private readonly SalesHistoryStore _salesHistoryStore;
     private readonly SalesCheckoutService _salesCheckoutService;
 
     public SalesApiController(
         ProductInventoryStore inventoryStore,
+        SalesForecastService salesForecastService,
         SalesHistoryStore salesHistoryStore,
         SalesCheckoutService salesCheckoutService)
     {
         _inventoryStore = inventoryStore;
+        _salesForecastService = salesForecastService;
         _salesHistoryStore = salesHistoryStore;
         _salesCheckoutService = salesCheckoutService;
     }
@@ -26,6 +29,12 @@ public class SalesApiController : ControllerBase
     public IActionResult GetRecent()
     {
         return Ok(_salesHistoryStore.GetAll());
+    }
+
+    [HttpGet("forecast")]
+    public IActionResult GetForecast()
+    {
+        return Ok(_salesForecastService.BuildForecast());
     }
 
     [HttpPost]
