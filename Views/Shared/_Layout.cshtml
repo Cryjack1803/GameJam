@@ -1,8 +1,8 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿@using System.Security.Claims
 @{
-    var userName = Context.Session.GetString("Auth.UserName");
-    var userRole = Context.Session.GetString("Auth.UserRole");
-    var isAuthenticated = !string.IsNullOrWhiteSpace(userName);
+    var userName = User.FindFirstValue(ClaimTypes.GivenName) ?? User.Identity?.Name;
+    var userRole = User.FindFirstValue(ClaimTypes.Role);
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -33,6 +33,9 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Login">Login</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Register">Registro</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home"
                                asp-action="Privacy">Privacidad</a>
                         </li>
@@ -42,12 +45,16 @@
                         {
                             <span class="user-badge">@userName (@userRole)</span>
                             <form asp-controller="Auth" asp-action="Logout" method="post" class="logout-form">
+                                @Html.AntiForgeryToken()
                                 <button type="submit" class="btn btn-dark btn-sm">Cerrar sesion</button>
                             </form>
                         }
                         else
                         {
-                            <a class="btn btn-outline-dark btn-sm" asp-controller="Auth" asp-action="Login">Ingresar</a>
+                            <div class="nav-session-links">
+                                <a class="btn btn-outline-dark btn-sm" asp-controller="Auth" asp-action="Login">Ingresar</a>
+                                <a class="btn btn-dark btn-sm" asp-controller="Auth" asp-action="Register">Registrarse</a>
+                            </div>
                         }
                     </div>
                 </div>

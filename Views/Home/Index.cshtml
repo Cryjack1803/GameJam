@@ -1,8 +1,8 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿@using System.Security.Claims
 @{
     ViewData["Title"] = "Inicio";
-    var currentUser = Context.Session.GetString("Auth.UserName");
-    var currentRole = Context.Session.GetString("Auth.UserRole");
+    var currentUser = User.FindFirstValue(ClaimTypes.GivenName) ?? User.Identity?.Name;
+    var currentRole = User.FindFirstValue(ClaimTypes.Role);
 }
 
 <section class="hero-panel">
@@ -16,7 +16,14 @@
         <div class="hero-actions">
             <a class="btn btn-dark btn-lg" href="#modulos">Ver modulos</a>
             <a class="btn btn-outline-dark btn-lg" href="#vision">Ver objetivo del proyecto</a>
-            <a class="btn btn-success btn-lg" asp-controller="Auth" asp-action="Login">Probar login</a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <span class="btn btn-success btn-lg disabled">Sesion activa</span>
+            }
+            else
+            {
+                <a class="btn btn-success btn-lg" asp-controller="Auth" asp-action="Login">Probar login</a>
+            }
         </div>
 
         @if (!string.IsNullOrWhiteSpace(currentUser))
@@ -64,11 +71,11 @@
         </article>
         <article class="feature-card">
             <h3>Login y sesiones</h3>
-            <p>Acceso por usuario, control de sesion y personalizacion por rol.</p>
+            <p>Acceso por usuario, registro con Identity, cookies seguras y personalizacion por rol.</p>
         </article>
         <article class="feature-card">
             <h3>Base de datos</h3>
-            <p>Persistencia de productos, ventas, clientes y mensajes.</p>
+            <p>Persistencia local con EF Core y base SQLite para identidad y futuros modulos.</p>
         </article>
         <article class="feature-card">
             <h3>Render web</h3>

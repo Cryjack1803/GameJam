@@ -9,8 +9,8 @@
         <span class="eyebrow">HU 02</span>
         <h1 class="mt-3">Ingreso al sistema</h1>
         <p class="text-secondary">
-            Esta pantalla cubre el acceso inicial del minimarket y deja lista la base para sesiones,
-            roles y futuras validaciones con base de datos.
+            Inicia sesion con Identity para acceder al sistema del minimarket con autenticacion real,
+            roles y persistencia en base de datos.
         </p>
 
         <form asp-action="Login" method="post" class="mt-4">
@@ -35,17 +35,18 @@
 
             <div class="d-flex flex-wrap gap-2">
                 <button type="submit" class="btn btn-dark btn-lg">Ingresar</button>
+                <a asp-action="Register" class="btn btn-success btn-lg">Crear cuenta</a>
                 <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark btn-lg">Volver al inicio</a>
             </div>
         </form>
     </div>
 
     <aside class="auth-side">
-        <span class="status-pill">Accesos de prueba</span>
-        <h2 class="mt-3">Credenciales demo para la sustentacion</h2>
+        <span class="status-pill">Identity + EF Core</span>
+        <h2 class="mt-3">Acceso real con persistencia local</h2>
         <p class="text-secondary">
-            Puedes usar cualquiera de estos accesos para demostrar roles hasta que la HU de base de datos
-            reemplace este login temporal.
+            El sistema crea una base SQLite automaticamente al iniciar la aplicacion y deja un usuario
+            administrador listo para la demostracion.
         </p>
 
         <div class="credential-list">
@@ -55,14 +56,9 @@
                 <span>Clave: Admin123*</span>
             </article>
             <article class="credential-item">
-                <strong>Cliente</strong>
-                <span>Correo: cliente@minimarket.com</span>
-                <span>Clave: Cliente123*</span>
-            </article>
-            <article class="credential-item">
-                <strong>Cajero</strong>
-                <span>Correo: cajero@minimarket.com</span>
-                <span>Clave: Cajero123*</span>
+                <strong>Registro publico</strong>
+                <span>Los nuevos usuarios se crean con rol Cliente.</span>
+                <span>Luego puedes ampliar roles desde administracion.</span>
             </article>
         </div>
     </aside>
