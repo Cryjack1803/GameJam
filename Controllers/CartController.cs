@@ -10,15 +10,18 @@ namespace Tarea_01.Controllers;
 public class CartController : Controller
 {
     private readonly CartSessionService _cartSessionService;
+    private readonly MercadoPagoPaymentService _mercadoPagoPaymentService;
     private readonly SalesHistoryStore _salesHistoryStore;
     private readonly SalesCheckoutService _salesCheckoutService;
 
     public CartController(
         CartSessionService cartSessionService,
+        MercadoPagoPaymentService mercadoPagoPaymentService,
         SalesHistoryStore salesHistoryStore,
         SalesCheckoutService salesCheckoutService)
     {
         _cartSessionService = cartSessionService;
+        _mercadoPagoPaymentService = mercadoPagoPaymentService;
         _salesHistoryStore = salesHistoryStore;
         _salesCheckoutService = salesCheckoutService;
     }
@@ -29,7 +32,8 @@ public class CartController : Controller
         var model = new CartViewModel
         {
             Items = _cartSessionService.GetItems(),
-            RecentSales = _salesHistoryStore.GetRecent().ToList()
+            RecentSales = _salesHistoryStore.GetRecent().ToList(),
+            IsMercadoPagoConfigured = _mercadoPagoPaymentService.IsConfigured
         };
 
         return View(model);
