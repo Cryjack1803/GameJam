@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -68,15 +69,7 @@ public class PaymentController : Controller
     [HttpGet]
     public async Task<IActionResult> MercadoPagoSuccess(long? payment_id, long? collection_id, string? external_reference, CancellationToken cancellationToken)
     {
-        var pendingPayment = _paymentSessionService.Get();
         var mercadoPagoPaymentId = payment_id ?? collection_id;
-
-        if (pendingPayment is null ||
-            !string.Equals(pendingPayment.ExternalReference, external_reference, StringComparison.OrdinalIgnoreCase))
-        {
-            TempData["CartMessage"] = "No se encontro una compra pendiente para confirmar.";
-            return RedirectToAction("Index", "Cart");
-        }
 
         if (!mercadoPagoPaymentId.HasValue)
         {
@@ -92,7 +85,14 @@ public class PaymentController : Controller
             return RedirectToAction("Index", "Cart");
         }
 
-        if (!string.Equals(verificationResult.ExternalReference, pendingPayment.ExternalReference, StringComparison.OrdinalIgnoreCase))
+        var externalReference = string.IsNullOrWhiteSpace(external_reference)
+            ? verificationResult.ExternalReference
+            : external_reference;
+
+        var pendingPayment = _paymentSessionService.GetByExternalReference(externalReference) ?? _paymentSessionService.Get();
+
+        if (pendingPayment is null ||
+            !string.Equals(verificationResult.ExternalReference, pendingPayment.ExternalReference, StringComparison.OrdinalIgnoreCase))
         {
             TempData["CartMessage"] = "La referencia del pago aprobado no coincide con la compra pendiente.";
             return RedirectToAction("Index", "Cart");
@@ -105,16 +105,70 @@ public class PaymentController : Controller
             return RedirectToAction("Index", "Cart");
         }
 
-        if (!_salesCheckoutService.TryCheckout(pendingPayment.BuyerName, pendingPayment.Items, out _, out var errorMessage))
+        if (!_paymentSessionService.TryBeginCompletion(pendingPayment.ExternalReference, out var lockedPayment))
         {
+            _cartSessionService.Clear();
+            _paymentSessionService.Clear();
+            TempData["CartMessage"] = "El pago ya fue procesado previamente.";
+            return RedirectToAction("Index", "Cart");
+        }
+
+        if (!_salesCheckoutService.TryCheckout(lockedPayment!.BuyerName, lockedPayment.Items, out _, out var errorMessage))
+        {
+            _paymentSessionService.ReleaseCompletion(pendingPayment.ExternalReference);
             TempData["CartMessage"] = errorMessage;
             return RedirectToAction("Index", "Cart");
         }
 
         _cartSessionService.Clear();
-        _paymentSessionService.Clear();
+        _paymentSessionService.Complete(pendingPayment.ExternalReference);
         TempData["CartMessage"] = "Pago aprobado en Mercado Pago y venta registrada correctamente.";
         return RedirectToAction("Index", "Cart");
+    }
+
+    [AllowAnonymous]
+    [HttpPost]
+    [IgnoreAntiforgeryToken]
+    public async Task<IActionResult> MercadoPagoWebhook([FromBody] JsonElement payload, [FromQuery] string? type, [FromQuery] string? topic, [FromQuery] long? id, CancellationToken cancellationToken)
+    {
+        var notificationType = type ?? topic ?? ReadString(payload, "type") ?? ReadString(payload, "topic");
+
+        if (!string.Equals(notificationType, "payment", StringComparison.OrdinalIgnoreCase))
+        {
+            return Ok();
+        }
+
+        var paymentId = id ?? ReadLong(payload, "data", "id") ?? ReadLong(payload, "id");
+
+        if (!paymentId.HasValue)
+        {
+            return Ok();
+        }
+
+        var verificationResult = await _mercadoPagoPaymentService.VerifyApprovedPaymentAsync(paymentId.Value, cancellationToken);
+
+        if (!verificationResult.Succeeded)
+        {
+            return Ok();
+        }
+
+        var pendingPayment = _paymentSessionService.GetByExternalReference(verificationResult.ExternalReference)
+            ?? _paymentSessionService.GetByPreferenceId(verificationResult.PreferenceId);
+
+        if (pendingPayment is null ||
+            !_paymentSessionService.TryBeginCompletion(pendingPayment.ExternalReference, out var lockedPayment))
+        {
+            return Ok();
+        }
+
+        if (!_salesCheckoutService.TryCheckout(lockedPayment!.BuyerName, lockedPayment.Items, out _, out _))
+        {
+            _paymentSessionService.ReleaseCompletion(pendingPayment.ExternalReference);
+            return Ok();
+        }
+
+        _paymentSessionService.Complete(pendingPayment.ExternalReference);
+        return Ok();
     }
 
     [AllowAnonymous]
@@ -131,5 +185,48 @@ public class PaymentController : Controller
     {
         TempData["CartMessage"] = "El pago quedo pendiente en Mercado Pago. Revisa el estado antes de cerrar la venta.";
         return RedirectToAction("Index", "Cart");
+    }
+
+    private static string? ReadString(JsonElement payload, string propertyName)
+    {
+        return payload.ValueKind == JsonValueKind.Object &&
+               payload.TryGetProperty(propertyName, out var property) &&
+               property.ValueKind == JsonValueKind.String
+            ? property.GetString()
+            : null;
+    }
+
+    private static long? ReadLong(JsonElement payload, string parentPropertyName, string propertyName)
+    {
+        if (payload.ValueKind != JsonValueKind.Object ||
+            !payload.TryGetProperty(parentPropertyName, out var parent) ||
+            parent.ValueKind != JsonValueKind.Object ||
+            !parent.TryGetProperty(propertyName, out var property))
+        {
+            return null;
+        }
+
+        return property.ValueKind switch
+        {
+            JsonValueKind.Number when property.TryGetInt64(out var value) => value,
+            JsonValueKind.String when long.TryParse(property.GetString(), out var value) => value,
+            _ => null
+        };
+    }
+
+    private static long? ReadLong(JsonElement payload, string propertyName)
+    {
+        if (payload.ValueKind != JsonValueKind.Object ||
+            !payload.TryGetProperty(propertyName, out var property))
+        {
+            return null;
+        }
+
+        return property.ValueKind switch
+        {
+            JsonValueKind.Number when property.TryGetInt64(out var value) => value,
+            JsonValueKind.String when long.TryParse(property.GetString(), out var value) => value,
+            _ => null
+        };
     }
 }

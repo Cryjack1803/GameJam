@@ -14,8 +14,8 @@ builder.Services.AddSingleton<ProductInventoryStore>();
 builder.Services.AddSingleton<SalesHistoryStore>();
 builder.Services.AddSingleton<SalesForecastService>();
 builder.Services.AddSingleton<ProductRecommendationService>();
+builder.Services.AddSingleton<PaymentSessionService>();
 builder.Services.AddScoped<CartSessionService>();
-builder.Services.AddScoped<PaymentSessionService>();
 builder.Services.AddScoped<SalesCheckoutService>();
 builder.Services.AddHttpClient<MercadoPagoPaymentService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
