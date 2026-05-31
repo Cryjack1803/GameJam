@@ -1,5 +1,3 @@
-using Microsoft.ML;
-using Microsoft.ML.Data;
 using Tarea_01.Models;
 
 namespace Tarea_01.Services;
@@ -33,22 +31,13 @@ public class SalesForecastService
             return new SalesForecastViewModel();
         }
 
-        var mlContext = new MLContext(seed: 1);
-        var trainingData = mlContext.Data.LoadFromEnumerable(dailySales);
-
-        var pipeline = mlContext.Transforms.Concatenate("Features", nameof(SalesObservation.DayIndex))
-            .Append(mlContext.Regression.Trainers.Sdca(labelColumnName: nameof(SalesObservation.Total), maximumNumberOfIterations: 100));
-
-        var model = pipeline.Fit(trainingData);
-        var engine = mlContext.Model.CreatePredictionEngine<SalesObservation, SalesPrediction>(model);
-
         var lastDate = orderedSales.Last().CreatedAt.Date;
         var forecastPoints = new List<SalesForecastPointViewModel>();
+        var trendProjection = BuildTrendProjection(dailySales, horizonDays);
 
         for (var index = 1; index <= horizonDays; index++)
         {
-            var prediction = engine.Predict(new SalesObservation { DayIndex = dailySales.Count + index });
-            var predictedTotal = Math.Max(0, (decimal)prediction.Score);
+            var predictedTotal = trendProjection[index - 1];
             var lower = Math.Max(0, predictedTotal * 0.9m);
             var upper = predictedTotal * 1.1m;
 
@@ -64,10 +53,59 @@ public class SalesForecastService
         return new SalesForecastViewModel
         {
             LastObservedTotal = decimal.Round((decimal)dailySales.Last().Total, 2),
-            AverageDailySales = decimal.Round(orderedSales.Average(sale => sale.Total), 2),
+            AverageDailySales = decimal.Round(dailySales.Average(sale => (decimal)sale.Total), 2),
             NextDayPrediction = forecastPoints.FirstOrDefault()?.PredictedTotal ?? 0,
             ForecastPoints = forecastPoints
         };
+    }
+
+    private static List<decimal> BuildTrendProjection(IReadOnlyList<SalesObservation> dailySales, int horizonDays)
+    {
+        if (dailySales.Count == 1)
+        {
+            var singleValue = decimal.Round((decimal)dailySales[0].Total, 2);
+            return Enumerable.Range(0, horizonDays).Select(_ => singleValue).ToList();
+        }
+
+        var pointCount = dailySales.Count;
+        decimal sumX = 0;
+        decimal sumY = 0;
+        decimal sumXY = 0;
+        decimal sumX2 = 0;
+
+        foreach (var point in dailySales)
+        {
+            var x = (decimal)point.DayIndex;
+            var y = (decimal)point.Total;
+            sumX += x;
+            sumY += y;
+            sumXY += x * y;
+            sumX2 += x * x;
+        }
+
+        var n = (decimal)pointCount;
+        var denominator = (n * sumX2) - (sumX * sumX);
+        var slope = denominator == 0 ? 0 : ((n * sumXY) - (sumX * sumY)) / denominator;
+        var intercept = n == 0 ? 0 : (sumY - (slope * sumX)) / n;
+
+        var recentTotals = dailySales.TakeLast(Math.Min(5, pointCount)).Select(item => (decimal)item.Total).ToList();
+        var recentAverage = recentTotals.Average();
+        var momentum = recentTotals.Count > 1
+            ? (recentTotals.Last() - recentTotals.First()) / (recentTotals.Count - 1)
+            : 0;
+
+        var forecasts = new List<decimal>(horizonDays);
+
+        for (var index = 1; index <= horizonDays; index++)
+        {
+            var futureX = pointCount + index;
+            var regressionValue = intercept + (slope * futureX);
+            var momentumValue = recentTotals.Last() + (momentum * index);
+            var blendedValue = (regressionValue * 0.55m) + (recentAverage * 0.30m) + (momentumValue * 0.15m);
+            forecasts.Add(decimal.Round(Math.Max(0, blendedValue), 2));
+        }
+
+        return forecasts;
     }
 
     private sealed class SalesObservation
@@ -75,11 +113,5 @@ public class SalesForecastService
         public float DayIndex { get; set; }
 
         public float Total { get; set; }
-    }
-
-    private sealed class SalesPrediction
-    {
-        [ColumnName("Score")]
-        public float Score { get; set; }
     }
 }

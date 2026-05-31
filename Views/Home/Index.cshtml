@@ -5,120 +5,123 @@
     var currentRole = User.FindFirstValue(ClaimTypes.Role);
 }
 
-<section class="hero-panel">
-    <div class="hero-copy">
-        <span class="eyebrow">MiniMarket inteligente</span>
-        <h1>Controla ventas, stock y proyecciones desde una sola plataforma.</h1>
+<section class="store-hero">
+    <div class="store-hero-copy">
+        <span class="eyebrow">Mercado Nativa</span>
+        <h1>Compra rapido, elige mejor y mantente al dia con lo que mas se mueve.</h1>
         <p>
-            Esta primera entrega concentra la portada del sistema del minimarket y deja visibles los
-            modulos que se iran integrando: catalogo, contacto, sesiones, reportes y prediccion de ventas.
+            Un minimarket digital pensado para vender con claridad, mostrar productos con buena presencia y darle al cliente una experiencia simple desde el primer vistazo.
         </p>
         <div class="hero-actions">
-            <a class="btn btn-dark btn-lg" href="#modulos">Ver modulos</a>
-            <a class="btn btn-outline-dark btn-lg" href="#vision">Ver objetivo del proyecto</a>
-            <a class="btn btn-outline-success btn-lg" asp-controller="Catalog" asp-action="Index">Ir al catalogo</a>
-            <a class="btn btn-outline-dark btn-lg" asp-controller="Contact" asp-action="Index">Ir a contacto</a>
-            <a class="btn btn-outline-dark btn-lg" asp-controller="Session" asp-action="Index">Ver sesiones</a>
-            <a class="btn btn-outline-dark btn-lg" asp-controller="Cart" asp-action="Index">Ver carrito</a>
-            <a class="btn btn-outline-dark btn-lg" asp-controller="Forecast" asp-action="Index">Ver prediccion</a>
-            <a class="btn btn-outline-dark btn-lg" asp-controller="Recommendation" asp-action="Index">Ver recomendaciones</a>
+            <a class="btn btn-dark btn-lg" asp-controller="Catalog" asp-action="Index">Comprar ahora</a>
+            <a class="btn btn-outline-dark btn-lg" asp-controller="Contact" asp-action="Index">Hablar con tienda</a>
+            <a class="btn btn-outline-success btn-lg" asp-controller="Cart" asp-action="Index">Ver carrito</a>
             @if (User.Identity?.IsAuthenticated == true)
             {
-                <span class="btn btn-success btn-lg disabled">Sesion activa</span>
+                <a class="btn btn-outline-dark btn-lg" asp-controller="Session" asp-action="Index">Mi cuenta</a>
             }
             else
             {
-                <a class="btn btn-success btn-lg" asp-controller="Auth" asp-action="Login">Probar login</a>
+                <a class="btn btn-success btn-lg" asp-controller="Auth" asp-action="Login">Ingresar</a>
             }
         </div>
 
         @if (!string.IsNullOrWhiteSpace(currentUser))
         {
             <div class="session-banner">
-                <strong>Sesion activa:</strong> @currentUser
-                <span>Rol actual: @currentRole</span>
+                <strong>@currentUser</strong>
+                <span>@currentRole</span>
             </div>
         }
     </div>
 
-    <div class="hero-stats">
-        <article>
-            <span class="stat-label">Ventas monitoreadas</span>
-            <strong>24/7</strong>
-            <p>Seguimiento continuo de movimiento comercial y comportamiento de compra.</p>
+    <div class="store-hero-panel">
+        <div class="store-panel-top">
+            <span class="status-pill">Abierto hoy</span>
+            <span class="status-pill">Entrega rapida</span>
+        </div>
+        <div class="store-price-block">
+            <span>Canasta destacada</span>
+            <strong>S/ 39.90</strong>
+            <p>Seleccion pensada para compras frecuentes y rotacion diaria.</p>
+        </div>
+        <div class="store-mini-grid">
+            <article>
+                <span>Snacks</span>
+                <strong>+120</strong>
+            </article>
+            <article>
+                <span>Bebidas</span>
+                <strong>+80</strong>
+            </article>
+            <article>
+                <span>Favoritos</span>
+                <strong>Top ventas</strong>
+            </article>
+            <article>
+                <span>Compra guiada</span>
+                <strong>Recomendaciones</strong>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="business-strip">
+    <article>
+        <span>Atencion clara</span>
+        <strong>Compra sin vueltas</strong>
+    </article>
+    <article>
+        <span>Inventario visible</span>
+        <strong>Stock actualizado</strong>
+    </article>
+    <article>
+        <span>Movimiento comercial</span>
+        <strong>Tendencias utiles</strong>
+    </article>
+</section>
+
+<section class="home-section">
+    <div class="section-heading section-heading-inline">
+        <div>
+            <span class="eyebrow">Seleccion del dia</span>
+            <h2>Todo lo importante, sin ruido</h2>
+        </div>
+        <a class="btn btn-outline-dark" asp-controller="Catalog" asp-action="Index">Ver catalogo completo</a>
+    </div>
+
+    <div class="store-card-grid">
+        <article class="store-card store-card-primary">
+            <h3>Productos listos para comprar</h3>
+            <p>Encuentra categorias claras, precios visibles y una ruta de compra directa.</p>
         </article>
-        <article>
-            <span class="stat-label">Enfoque academico</span>
-            <strong>MVC + ML.NET</strong>
-            <p>Base web tradicional con espacio para APIs, recomendacion y agente de IA.</p>
+        <article class="store-card">
+            <h3>Sugerencias que empujan venta</h3>
+            <p>La tienda destaca combinaciones utiles para aumentar ticket promedio.</p>
         </article>
-        <article>
-            <span class="stat-label">Meta final</span>
-            <strong>Go Live</strong>
-            <p>Aplicativo funcional listo para desplegar cuando completes la ultima fase.</p>
+        <article class="store-card">
+            <h3>Lectura rapida del negocio</h3>
+            <p>El comportamiento de ventas ayuda a decidir que mover primero.</p>
         </article>
     </div>
 </section>
 
-<section class="home-section" id="modulos">
+<section class="home-section accent-section">
     <div class="section-heading">
-        <span class="eyebrow">Primer avance</span>
-        <h2>Base funcional del sistema</h2>
+        <span class="eyebrow">Experiencia de compra</span>
+        <h2>Una tienda mas ordenada y con mejor presencia</h2>
     </div>
 
-    <div class="feature-grid">
-        <article class="feature-card">
-            <h3>Contacto</h3>
-            <p>Formulario para mensajes, consultas y soporte del minimarket.</p>
+    <div class="store-showcase">
+        <article class="showcase-quote">
+            <p>
+                "La pagina debe verse como negocio: limpia, directa y con foco en vender, no en explicar internamente como fue construida."
+            </p>
         </article>
-        <article class="feature-card">
-            <h3>Catalogo</h3>
-            <p>Listado de productos, categorias, precios y disponibilidad.</p>
+        <article class="showcase-actions">
+            <a class="btn btn-dark" asp-controller="Recommendation" asp-action="Index">Ver sugerencias</a>
+            <a class="btn btn-outline-dark" asp-controller="Forecast" asp-action="Index">Ver tendencias</a>
+            <a class="btn btn-outline-dark" asp-controller="Contact" asp-action="Index">Solicitar apoyo</a>
         </article>
-        <article class="feature-card">
-            <h3>Login y sesiones</h3>
-            <p>Acceso por usuario, registro con Identity, cookies seguras y personalizacion por rol.</p>
-        </article>
-        <article class="feature-card">
-            <h3>Base de datos</h3>
-            <p>Persistencia local con EF Core y base SQLite para identidad y futuros modulos.</p>
-        </article>
-        <article class="feature-card">
-            <h3>Render web</h3>
-            <p>Vistas MVC listas para mostrar el sistema de manera clara y profesional.</p>
-        </article>
-        <article class="feature-card">
-            <h3>Ramas por HU</h3>
-            <p>Desarrollo organizado con una rama por funcionalidad antes de mergear a main.</p>
-        </article>
-    </div>
-</section>
-
-<section class="home-section accent-section" id="vision">
-    <div class="section-heading">
-        <span class="eyebrow">Segundo y tercer avance</span>
-        <h2>Escalado hacia analitica e inteligencia artificial</h2>
-    </div>
-
-    <div class="roadmap-grid">
-        <article>
-            <h3>API y analitica</h3>
-            <p>Endpoints para productos, ventas y consultas del sistema administrativo.</p>
-        </article>
-        <article>
-            <h3>ML.NET</h3>
-            <p>Prediccion de ventas y clasificacion de comportamiento de compra.</p>
-        </article>
-        <article>
-            <h3>Recomendacion</h3>
-            <p>Sugerencias de productos a partir del historial o categorias relacionadas.</p>
-        </article>
-        <article>
-            <h3>Agente de IA</h3>
-            <p>Asistente apoyado por Semantic Kernel y LLM para consultas del negocio.</p>
-        </article>
-    </div>
-    <div class="project-note">
-        <strong>Objetivo:</strong> construir un minimarket web con operacion comercial real y una capa de prediccion para apoyar decisiones del cliente.
     </div>
 </section>
