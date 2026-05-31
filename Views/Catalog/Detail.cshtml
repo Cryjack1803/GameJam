@@ -1,0 +1,38 @@
+@model Tarea_01.Models.ProductViewModel
+
+@{
+    ViewData["Title"] = "Detalle de producto";
+}
+
+<section class="catalog-shell">
+    <div class="catalog-detail-layout">
+        <article class="catalog-detail-main">
+            <div class="catalog-badges">
+                <span class="eyebrow">@Model.Category</span>
+                @if (Model.IsFeatured)
+                {
+                    <span class="status-pill">Producto destacado</span>
+                }
+            </div>
+
+            <h1>@Model.Name</h1>
+            <p>@Model.Description</p>
+            <span class="catalog-price">S/ @Model.Price.ToString("0.00")</span>
+        </article>
+
+        <aside class="catalog-detail-side">
+            <h2 class="h4">Resumen comercial</h2>
+            <ul>
+                <li>Categoria: @Model.Category</li>
+                <li>Unidad de venta: @Model.Unit</li>
+                <li>Stock actual: @Model.Stock</li>
+                <li>Estado: @(Model.Stock <= 8 ? "Reposicion sugerida" : "Disponible")</li>
+            </ul>
+
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <a asp-action="Index" class="btn btn-dark">Volver al catalogo</a>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark">Ir al inicio</a>
+            </div>
+        </aside>
+    </div>
+</section>
