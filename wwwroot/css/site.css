@@ -630,6 +630,21 @@ body {
   color: var(--accent);
 }
 
+.recommendation-shell {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.recommendation-card {
+  min-height: 100%;
+}
+
+.recommendation-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
 .form-floating > .form-control-plaintext::placeholder,
 .form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
@@ -676,6 +691,10 @@ body {
   .forecast-grid {
     grid-template-columns: 1fr;
   }
+
+  .recommendation-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 575.98px) {
@@ -713,6 +732,10 @@ body {
   }
 
   .catalog-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .recommendation-grid {
     grid-template-columns: 1fr;
   }
 }

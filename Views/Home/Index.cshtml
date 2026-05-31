@@ -21,6 +21,7 @@
             <a class="btn btn-outline-dark btn-lg" asp-controller="Session" asp-action="Index">Ver sesiones</a>
             <a class="btn btn-outline-dark btn-lg" asp-controller="Cart" asp-action="Index">Ver carrito</a>
             <a class="btn btn-outline-dark btn-lg" asp-controller="Forecast" asp-action="Index">Ver prediccion</a>
+            <a class="btn btn-outline-dark btn-lg" asp-controller="Recommendation" asp-action="Index">Ver recomendaciones</a>
             @if (User.Identity?.IsAuthenticated == true)
             {
                 <span class="btn btn-success btn-lg disabled">Sesion activa</span>
