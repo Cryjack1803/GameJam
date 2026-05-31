@@ -30,6 +30,14 @@
             </ul>
 
             <div class="d-flex flex-wrap gap-2 mt-4">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline-flex gap-2">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="productId" value="@Model.Id" />
+                        <button type="submit" class="btn btn-dark" @(Model.Stock == 0 ? "disabled" : null)>Agregar al carrito</button>
+                    </form>
+                }
                 <a asp-action="Index" class="btn btn-dark">Volver al catalogo</a>
                 <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark">Ir al inicio</a>
             </div>

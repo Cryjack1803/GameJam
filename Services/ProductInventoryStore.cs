@@ -66,6 +66,25 @@ public class ProductInventoryStore
         return true;
     }
 
+    public bool HasAvailableStock(int id, int quantity)
+    {
+        var existingProduct = _products.FirstOrDefault(item => item.Id == id);
+        return existingProduct is not null && existingProduct.Stock >= quantity;
+    }
+
+    public bool TryDecreaseStock(int id, int quantity)
+    {
+        var existingProduct = _products.FirstOrDefault(item => item.Id == id);
+
+        if (existingProduct is null || existingProduct.Stock < quantity)
+        {
+            return false;
+        }
+
+        existingProduct.Stock -= quantity;
+        return true;
+    }
+
     private static ProductViewModel Clone(ProductViewModel product)
     {
         return new ProductViewModel
