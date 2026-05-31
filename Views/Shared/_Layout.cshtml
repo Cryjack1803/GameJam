@@ -10,7 +10,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MiniMarket Smart</title>
+    <title>@ViewData["Title"] - Mercado Nativa</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -20,7 +20,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light site-navbar mb-4">
             <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MiniMarket Smart</a>
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Mercado Nativa</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                         aria-controls="navbarSupportedContent"                     aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -37,33 +37,23 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Contact" asp-action="Index">Contacto</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Session" asp-action="Index">Sesiones</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Session" asp-action="Index">Mi cuenta</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index">Carrito</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Forecast" asp-action="Index">Prediccion</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Forecast" asp-action="Index">Tendencias</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Recommendation" asp-action="Index">Recomendacion</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Recommendation" asp-action="Index">Sugerencias</a>
                         </li>
                         @if (isAdmin)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="AdminProducts" asp-action="Index">Admin productos</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AdminProducts" asp-action="Index">Inventario</a>
                             </li>
                         }
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Login">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Register">Registro</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home"
-                               asp-action="Privacy">Privacidad</a>
-                        </li>
                     </ul>
                     <div class="nav-session">
                         @if (isAuthenticated)
@@ -94,7 +84,7 @@
 
     <footer class="footer text-muted">
         <div class="container">
-            &copy; 2026 - MiniMarket Smart - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
+            &copy; 2026 - Mercado Nativa - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

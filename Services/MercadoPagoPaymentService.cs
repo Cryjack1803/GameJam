@@ -116,7 +116,7 @@ public class MercadoPagoPaymentService
             return MercadoPagoPaymentVerificationResult.Fail($"El pago en Mercado Pago todavia no esta aprobado. Estado actual: {paymentStatus}.");
         }
 
-        return MercadoPagoPaymentVerificationResult.Success(payment.ExternalReference, payment.Order?.Id, payment.Status);
+        return MercadoPagoPaymentVerificationResult.Success(payment.ExternalReference, payment.Order?.Id ?? string.Empty, payment.Status);
     }
 
     public sealed class MercadoPagoPreferenceResult
