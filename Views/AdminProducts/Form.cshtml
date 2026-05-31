@@ -1,0 +1,69 @@
+@model Tarea_01.Models.ProductViewModel
+
+@{
+    var isEdit = Model.Id > 0;
+    ViewData["Title"] = isEdit ? "Editar producto" : "Crear producto";
+}
+
+<section class="admin-shell">
+    <article class="admin-form-card">
+        <span class="eyebrow">Administrador</span>
+        <h1 class="mt-3">@(isEdit ? "Editar producto" : "Registrar nuevo producto")</h1>
+        <p class="message-meta">
+            Este formulario actualiza el mismo inventario temporal que consume el catalogo publico.
+        </p>
+
+        <form asp-action="@(isEdit ? "Edit" : "Create")" method="post" class="mt-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <input asp-for="Id" type="hidden" />
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Category" class="form-label"></label>
+                    <input asp-for="Category" class="form-control" />
+                    <span asp-validation-for="Category" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Price" class="form-label"></label>
+                    <input asp-for="Price" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Stock" class="form-label"></label>
+                    <input asp-for="Stock" class="form-control" />
+                    <span asp-validation-for="Stock" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Unit" class="form-label"></label>
+                    <input asp-for="Unit" class="form-control" />
+                    <span asp-validation-for="Unit" class="text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" rows="4" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <div class="form-check">
+                        <input asp-for="IsFeatured" class="form-check-input" />
+                        <label asp-for="IsFeatured" class="form-check-label">Marcar como destacado</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <button type="submit" class="btn btn-dark">@(isEdit ? "Guardar cambios" : "Crear producto")</button>
+                <a asp-action="Index" class="btn btn-outline-dark">Volver al panel</a>
+            </div>
+        </form>
+    </article>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
