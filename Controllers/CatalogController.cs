@@ -7,10 +7,12 @@ namespace Tarea_01.Controllers;
 public class CatalogController : Controller
 {
     private readonly ProductInventoryStore _inventoryStore;
+    private readonly ProductRecommendationService _recommendationService;
 
-    public CatalogController(ProductInventoryStore inventoryStore)
+    public CatalogController(ProductInventoryStore inventoryStore, ProductRecommendationService recommendationService)
     {
         _inventoryStore = inventoryStore;
+        _recommendationService = recommendationService;
     }
 
     [HttpGet]
@@ -53,6 +55,12 @@ public class CatalogController : Controller
             return NotFound();
         }
 
-        return View(product);
+        var model = new CatalogDetailViewModel
+        {
+            Product = product,
+            Recommendations = _recommendationService.GetRecommendationsForProduct(id)
+        };
+
+        return View(model);
     }
 }
