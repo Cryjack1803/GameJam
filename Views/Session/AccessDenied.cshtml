@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = "Acceso denegado";
+}
+
+<section class="session-shell">
+    <div class="access-card">
+        <span class="eyebrow">Acceso denegado</span>
+        <h1 class="mt-3">No tienes permisos para entrar aqui</h1>
+        <p class="message-meta">
+            La sesion esta activa, pero tu rol no cumple el requisito de este modulo.
+        </p>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <a asp-controller="Session" asp-action="Index" class="btn btn-dark">Ir al panel de sesion</a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark">Volver al inicio</a>
+        </div>
+    </div>
+</section>
