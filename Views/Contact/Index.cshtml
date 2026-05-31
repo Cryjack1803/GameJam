@@ -1,0 +1,136 @@
+@model Tarea_01.Models.ContactPageViewModel
+
+@{
+    ViewData["Title"] = "Contacto";
+}
+
+<section class="contact-shell">
+    <div class="contact-summary">
+        <span class="eyebrow">HU 04</span>
+        <h1 class="mt-3">Centro de contacto del minimarket</h1>
+        <p class="mb-0">
+            Este modulo cubre contacto con validaciones, registro temporal de mensajes y una bandeja reciente
+            para seguimiento operativo antes de moverlo a base de datos.
+        </p>
+
+        <div class="contact-summary-grid">
+            <article class="contact-kpi">
+                <span>Total mensajes</span>
+                <strong>@Model.TotalMessages</strong>
+            </article>
+            <article class="contact-kpi">
+                <span>Prioridad alta</span>
+                <strong>@Model.HighPriorityMessages</strong>
+            </article>
+            <article class="contact-kpi">
+                <span>Consultas de clientes</span>
+                <strong>@Model.ClientMessages</strong>
+            </article>
+        </div>
+    </div>
+
+    <div class="contact-layout">
+        <article class="contact-card">
+            <h2 class="h3">Enviar mensaje</h2>
+            <p>Usa este formulario para soporte, reclamos, pedidos especiales o consultas del proyecto.</p>
+
+            @if (TempData["ContactMessage"] is string notice)
+            {
+                <div class="alert alert-success">@notice</div>
+            }
+
+            <form asp-action="Index" method="post" class="mt-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Form.Name" class="form-label"></label>
+                    <input asp-for="Form.Name" class="form-control" placeholder="Ingresa tu nombre" />
+                    <span asp-validation-for="Form.Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Form.Email" class="form-label"></label>
+                    <input asp-for="Form.Email" class="form-control" placeholder="correo@ejemplo.com" />
+                    <span asp-validation-for="Form.Email" class="text-danger"></span>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Form.Area" class="form-label"></label>
+                        <select asp-for="Form.Area" class="form-select">
+                            <option value="">Selecciona un area</option>
+                            <option value="Cliente">Cliente</option>
+                            <option value="Ventas">Ventas</option>
+                            <option value="Soporte">Soporte</option>
+                            <option value="Proveedor">Proveedor</option>
+                        </select>
+                        <span asp-validation-for="Form.Area" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Form.Priority" class="form-label"></label>
+                        <select asp-for="Form.Priority" class="form-select">
+                            <option value="">Selecciona una prioridad</option>
+                            <option value="Alta">Alta</option>
+                            <option value="Media">Media</option>
+                            <option value="Baja">Baja</option>
+                        </select>
+                        <span asp-validation-for="Form.Priority" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mt-3 mb-3">
+                    <label asp-for="Form.Subject" class="form-label"></label>
+                    <input asp-for="Form.Subject" class="form-control" placeholder="Asunto del mensaje" />
+                    <span asp-validation-for="Form.Subject" class="text-danger"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Form.Message" class="form-label"></label>
+                    <textarea asp-for="Form.Message" class="form-control" rows="5" placeholder="Escribe tu consulta o comentario"></textarea>
+                    <span asp-validation-for="Form.Message" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="submit" class="btn btn-dark">Enviar mensaje</button>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark">Volver al inicio</a>
+                </div>
+            </form>
+        </article>
+
+        <aside class="contact-card">
+            <h2 class="h3">Mensajes recientes</h2>
+            <p>Vista temporal para demostrar almacenamiento y seguimiento del modulo de contacto.</p>
+
+            @if (Model.Messages.Any())
+            {
+                <div class="message-list">
+                    @foreach (var message in Model.Messages)
+                    {
+                        <article class="message-card">
+                            <div class="catalog-badges">
+                                <span class="eyebrow">@message.Area</span>
+                                <span class="status-pill">@message.Priority</span>
+                            </div>
+                            <h3 class="h5">@message.Subject</h3>
+                            <div class="message-meta">@message.Name - @message.Email</div>
+                            <p class="mb-0">@message.Message</p>
+                            <div class="message-card-footer">
+                                <span class="catalog-stock">Registrado: @message.SentAt.ToString("dd/MM/yyyy HH:mm")</span>
+                            </div>
+                        </article>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="message-empty">
+                    Aun no hay mensajes registrados.
+                </div>
+            }
+        </aside>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
