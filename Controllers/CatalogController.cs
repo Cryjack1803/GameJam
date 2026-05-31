@@ -36,7 +36,7 @@ public class CatalogController : Controller
         {
             Search = search,
             Category = category,
-            Categories = Products.Select(product => product.Category).Distinct().OrderBy(name => name).ToList(),
+            Categories = products.Select(product => product.Category).Distinct().OrderBy(name => name).ToList(),
             Products = filteredProducts.OrderBy(product => product.Name).ToList()
         };
 

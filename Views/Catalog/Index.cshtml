@@ -58,7 +58,17 @@
                         <span class="catalog-stock @(product.Stock <= 8 ? "low" : string.Empty)">
                             Stock: @product.Stock @product.Unit
                         </span>
-                        <a asp-action="Detail" asp-route-id="@product.Id" class="btn btn-outline-dark btn-sm">Ver detalle</a>
+                        <div class="d-flex flex-wrap gap-2 justify-content-end">
+                            <a asp-action="Detail" asp-route-id="@product.Id" class="btn btn-outline-dark btn-sm">Ver detalle</a>
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="productId" value="@product.Id" />
+                                    <button type="submit" class="btn btn-dark btn-sm" @(product.Stock == 0 ? "disabled" : null)>Agregar</button>
+                                </form>
+                            }
+                        </div>
                     </div>
                 </article>
             }

@@ -19,6 +19,7 @@
             <a class="btn btn-outline-success btn-lg" asp-controller="Catalog" asp-action="Index">Ir al catalogo</a>
             <a class="btn btn-outline-dark btn-lg" asp-controller="Contact" asp-action="Index">Ir a contacto</a>
             <a class="btn btn-outline-dark btn-lg" asp-controller="Session" asp-action="Index">Ver sesiones</a>
+            <a class="btn btn-outline-dark btn-lg" asp-controller="Cart" asp-action="Index">Ver carrito</a>
             @if (User.Identity?.IsAuthenticated == true)
             {
                 <span class="btn btn-success btn-lg disabled">Sesion activa</span>
