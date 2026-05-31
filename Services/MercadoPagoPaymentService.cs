@@ -45,6 +45,7 @@ public class MercadoPagoPaymentService
                 Failure = $"{baseUrl}/Payment/MercadoPagoFailure",
                 Pending = $"{baseUrl}/Payment/MercadoPagoPending"
             },
+            NotificationUrl = $"{baseUrl}/Payment/MercadoPagoWebhook",
             AutoReturn = "approved",
             ExternalReference = pendingPayment.ExternalReference,
             StatementDescriptor = "MINIMARKET"
@@ -190,6 +191,9 @@ public class MercadoPagoPaymentService
 
         [JsonPropertyName("auto_return")]
         public string AutoReturn { get; set; } = "approved";
+
+        [JsonPropertyName("notification_url")]
+        public string NotificationUrl { get; set; } = string.Empty;
 
         [JsonPropertyName("external_reference")]
         public string ExternalReference { get; set; } = string.Empty;
