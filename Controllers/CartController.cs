@@ -10,17 +10,17 @@ namespace Tarea_01.Controllers;
 public class CartController : Controller
 {
     private readonly CartSessionService _cartSessionService;
-    private readonly ProductInventoryStore _inventoryStore;
     private readonly SalesHistoryStore _salesHistoryStore;
+    private readonly SalesCheckoutService _salesCheckoutService;
 
     public CartController(
         CartSessionService cartSessionService,
-        ProductInventoryStore inventoryStore,
-        SalesHistoryStore salesHistoryStore)
+        SalesHistoryStore salesHistoryStore,
+        SalesCheckoutService salesCheckoutService)
     {
         _cartSessionService = cartSessionService;
-        _inventoryStore = inventoryStore;
         _salesHistoryStore = salesHistoryStore;
+        _salesCheckoutService = salesCheckoutService;
     }
 
     [HttpGet]
@@ -39,28 +39,15 @@ public class CartController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Add(int productId)
     {
-        var product = _inventoryStore.GetById(productId);
-
-        if (product is null || product.Stock <= 0)
+        if (_salesCheckoutService.TryAddToCart(productId, _cartSessionService.GetItems(), out var product, out var errorMessage))
         {
-            TempData["CartMessage"] = "El producto no esta disponible.";
-            return RedirectToAction("Index", "Catalog");
-        }
-
-        var existingQuantity = _cartSessionService.GetItems()
-            .Where(item => item.ProductId == productId)
-            .Select(item => item.Quantity)
-            .FirstOrDefault();
-
-        if (!_inventoryStore.HasAvailableStock(productId, existingQuantity + 1))
-        {
-            TempData["CartMessage"] = "No hay mas stock disponible para agregar este producto.";
+            _cartSessionService.Add(product!);
+            TempData["CartMessage"] = "Producto agregado al carrito.";
             return RedirectToAction(nameof(Index));
         }
 
-        _cartSessionService.Add(product);
-        TempData["CartMessage"] = "Producto agregado al carrito.";
-        return RedirectToAction(nameof(Index));
+        TempData["CartMessage"] = errorMessage;
+        return RedirectToAction("Index", "Catalog");
     }
 
     [HttpPost]
@@ -78,36 +65,13 @@ public class CartController : Controller
     {
         var items = _cartSessionService.GetItems();
 
-        if (!items.Any())
+        var buyerName = User.FindFirstValue(ClaimTypes.GivenName) ?? User.Identity?.Name ?? "Cliente";
+
+        if (!_salesCheckoutService.TryCheckout(buyerName, items, out var _, out var errorMessage))
         {
-            TempData["CartMessage"] = "El carrito esta vacio.";
+            TempData["CartMessage"] = errorMessage;
             return RedirectToAction(nameof(Index));
         }
-
-        if (items.Any(item => !_inventoryStore.HasAvailableStock(item.ProductId, item.Quantity)))
-        {
-            TempData["CartMessage"] = "No hay stock suficiente para completar la compra.";
-            return RedirectToAction(nameof(Index));
-        }
-
-        foreach (var item in items)
-        {
-            _inventoryStore.TryDecreaseStock(item.ProductId, item.Quantity);
-        }
-
-        _salesHistoryStore.Add(new SaleRecordViewModel
-        {
-            BuyerName = User.FindFirstValue(ClaimTypes.GivenName) ?? User.Identity?.Name ?? "Cliente",
-            Items = items.Select(item => new CartItemViewModel
-            {
-                ProductId = item.ProductId,
-                ProductName = item.ProductName,
-                UnitPrice = item.UnitPrice,
-                Quantity = item.Quantity
-            }).ToList(),
-            Total = items.Sum(item => item.Subtotal),
-            CreatedAt = DateTime.Now
-        });
 
         _cartSessionService.Clear();
         TempData["CartMessage"] = "Venta registrada correctamente.";
