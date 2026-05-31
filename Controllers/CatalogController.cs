@@ -1,24 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
 using Tarea_01.Models;
+using Tarea_01.Services;
 
 namespace Tarea_01.Controllers;
 
 public class CatalogController : Controller
 {
-    private static readonly IReadOnlyList<ProductViewModel> Products = new List<ProductViewModel>
+    private readonly ProductInventoryStore _inventoryStore;
+
+    public CatalogController(ProductInventoryStore inventoryStore)
     {
-        new() { Id = 1, Name = "Arroz Superior", Category = "Abarrotes", Price = 5.90m, Stock = 42, Unit = "bolsa 1kg", Description = "Producto basico para consumo diario y alta rotacion en el minimarket.", IsFeatured = true },
-        new() { Id = 2, Name = "Leche Entera", Category = "Lacteos", Price = 4.20m, Stock = 18, Unit = "tarro 400g", Description = "Leche ideal para desayunos y preparaciones familiares.", IsFeatured = true },
-        new() { Id = 3, Name = "Pan Molde Integral", Category = "Panaderia", Price = 7.50m, Stock = 10, Unit = "paquete", Description = "Opcion saludable para clientes frecuentes del turno manana.", IsFeatured = false },
-        new() { Id = 4, Name = "Gaseosa Cola 3L", Category = "Bebidas", Price = 11.90m, Stock = 25, Unit = "botella", Description = "Producto de alto movimiento en fines de semana y promociones familiares.", IsFeatured = true },
-        new() { Id = 5, Name = "Detergente Liquido", Category = "Limpieza", Price = 14.80m, Stock = 8, Unit = "botella 900ml", Description = "Insumo de limpieza con margen atractivo y frecuencia de recompra.", IsFeatured = false },
-        new() { Id = 6, Name = "Papel Higienico x4", Category = "Hogar", Price = 9.60m, Stock = 6, Unit = "pack", Description = "Producto esencial con alta sensibilidad a descuentos y packs.", IsFeatured = false }
-    };
+        _inventoryStore = inventoryStore;
+    }
 
     [HttpGet]
     public IActionResult Index(string? search, string? category)
     {
-        var filteredProducts = Products.AsEnumerable();
+        var products = _inventoryStore.GetAll();
+        var filteredProducts = products.AsEnumerable();
 
         if (!string.IsNullOrWhiteSpace(search))
         {
@@ -47,7 +46,7 @@ public class CatalogController : Controller
     [HttpGet]
     public IActionResult Detail(int id)
     {
-        var product = Products.FirstOrDefault(item => item.Id == id);
+        var product = _inventoryStore.GetById(id);
 
         if (product is null)
         {

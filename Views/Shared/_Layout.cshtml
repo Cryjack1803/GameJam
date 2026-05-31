@@ -3,6 +3,7 @@
     var userName = User.FindFirstValue(ClaimTypes.GivenName) ?? User.Identity?.Name;
     var userRole = User.FindFirstValue(ClaimTypes.Role);
     var isAuthenticated = User.Identity?.IsAuthenticated == true;
+    var isAdmin = string.Equals(userRole, "Administrador", StringComparison.OrdinalIgnoreCase);
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -38,6 +39,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Session" asp-action="Index">Sesiones</a>
                         </li>
+                        @if (isAdmin)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AdminProducts" asp-action="Index">Admin productos</a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Login">Login</a>
                         </li>
