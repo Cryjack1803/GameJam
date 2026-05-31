@@ -583,6 +583,53 @@ body {
   gap: 1rem;
 }
 
+.forecast-shell {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.forecast-card,
+.forecast-summary,
+.forecast-row {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  padding: 1.75rem;
+}
+
+.forecast-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.forecast-kpi {
+  padding: 1rem;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(217, 236, 217, 0.6), rgba(255, 250, 242, 0.92));
+}
+
+.forecast-kpi strong,
+.forecast-kpi span {
+  display: block;
+}
+
+.forecast-kpi strong {
+  font-size: 1.45rem;
+}
+
+.forecast-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.forecast-amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
 .form-floating > .form-control-plaintext::placeholder,
 .form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
@@ -625,6 +672,10 @@ body {
   .session-stat-grid {
     grid-template-columns: 1fr;
   }
+
+  .forecast-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 575.98px) {
@@ -643,6 +694,9 @@ body {
   .cart-card,
   .cart-summary,
   .sale-card,
+  .forecast-card,
+  .forecast-summary,
+  .forecast-row,
   .catalog-hero,
   .catalog-filter,
   .catalog-card,
