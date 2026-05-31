@@ -74,8 +74,22 @@
                     @Html.AntiForgeryToken()
                     <button type="submit" class="btn btn-dark" @(Model.Items.Any() ? null : "disabled")>Confirmar compra</button>
                 </form>
+                @if (Model.IsMercadoPagoConfigured)
+                {
+                    <form asp-controller="Payment" asp-action="StartMercadoPago" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-primary" @(Model.Items.Any() ? null : "disabled")>Pagar con Mercado Pago</button>
+                    </form>
+                }
                 <a asp-controller="Catalog" asp-action="Index" class="btn btn-outline-dark">Seguir comprando</a>
             </div>
+
+            @if (!Model.IsMercadoPagoConfigured)
+            {
+                <p class="message-meta mt-3 mb-0">
+                    Mercado Pago esta deshabilitado hasta que configures el `AccessToken` y el `AppBaseUrl`.
+                </p>
+            }
         </aside>
     </div>
 

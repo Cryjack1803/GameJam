@@ -6,5 +6,7 @@ public class CartViewModel
 
     public List<SaleRecordViewModel> RecentSales { get; set; } = new();
 
+    public bool IsMercadoPagoConfigured { get; set; }
+
     public decimal Total => Items.Sum(item => item.Subtotal);
 }
