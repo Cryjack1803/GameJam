@@ -17,6 +17,7 @@
             <a class="btn btn-dark btn-lg" href="#modulos">Ver modulos</a>
             <a class="btn btn-outline-dark btn-lg" href="#vision">Ver objetivo del proyecto</a>
             <a class="btn btn-outline-success btn-lg" asp-controller="Catalog" asp-action="Index">Ir al catalogo</a>
+            <a class="btn btn-outline-dark btn-lg" asp-controller="Contact" asp-action="Index">Ir a contacto</a>
             @if (User.Identity?.IsAuthenticated == true)
             {
                 <span class="btn btn-success btn-lg disabled">Sesion activa</span>
