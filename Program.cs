@@ -31,7 +31,9 @@ builder.Services.AddSession(options =>
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Auth/Login";
-    options.AccessDeniedPath = "/Auth/Login";
+    options.AccessDeniedPath = "/Session/AccessDenied";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+    options.SlidingExpiration = true;
 });
 
 var app = builder.Build();

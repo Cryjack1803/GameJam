@@ -450,6 +450,60 @@ body {
   color: var(--muted);
 }
 
+.session-shell {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.session-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 1rem;
+}
+
+.session-card,
+.access-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  padding: 1.75rem;
+}
+
+.session-card ul,
+.access-card ul {
+  padding-left: 1.2rem;
+  margin-bottom: 0;
+}
+
+.session-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.session-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.session-stat {
+  padding: 1rem;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(217, 236, 217, 0.6), rgba(255, 250, 242, 0.92));
+}
+
+.session-stat strong,
+.session-stat span {
+  display: block;
+}
+
+.session-stat strong {
+  font-size: 1.4rem;
+}
+
 .form-floating > .form-control-plaintext::placeholder,
 .form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
@@ -465,6 +519,7 @@ body {
   .hero-panel,
   .auth-shell,
   .contact-layout,
+  .session-grid,
   .catalog-detail-layout,
   .feature-grid,
   .roadmap-grid {
@@ -486,6 +541,10 @@ body {
   .contact-summary-grid {
     grid-template-columns: 1fr;
   }
+
+  .session-stat-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 575.98px) {
@@ -496,6 +555,8 @@ body {
   .contact-card,
   .contact-summary,
   .message-card,
+  .session-card,
+  .access-card,
   .catalog-hero,
   .catalog-filter,
   .catalog-card,

@@ -1,0 +1,58 @@
+@model Tarea_01.Models.SessionViewModel
+
+@{
+    ViewData["Title"] = "Sesiones";
+}
+
+<section class="session-shell">
+    <div class="session-card">
+        <span class="eyebrow">HU 05</span>
+        <h1 class="mt-3">Panel de sesion activa</h1>
+        <p class="message-meta mb-0">
+            Este modulo demuestra sesion autenticada, persistencia de cookie y control por rol para el minimarket.
+        </p>
+    </div>
+
+    <div class="session-stat-grid">
+        <article class="session-stat">
+            <span>Usuario</span>
+            <strong>@Model.UserName</strong>
+        </article>
+        <article class="session-stat">
+            <span>Rol</span>
+            <strong>@Model.Role</strong>
+        </article>
+        <article class="session-stat">
+            <span>Inicio de sesion</span>
+            <strong>@Model.AuthenticatedAt</strong>
+        </article>
+    </div>
+
+    <div class="session-grid">
+        <article class="session-card">
+            <h2 class="h3">Estado actual</h2>
+            <ul>
+                <li>Sesion ASP.NET activa con Identity.</li>
+                <li>Id de sesion: @Model.SessionId</li>
+                <li>Cookie persistente: @(Model.IsPersistent ? "Si" : "No")</li>
+                <li>Expiracion deslizante configurada a 30 minutos.</li>
+            </ul>
+
+            <div class="session-badges">
+                <span class="status-pill">Identity</span>
+                <span class="status-pill">Session</span>
+                <span class="status-pill">Roles</span>
+            </div>
+        </article>
+
+        <aside class="access-card">
+            <h2 class="h3">Accesos protegidos</h2>
+            <p class="message-meta">Desde aqui puedes comprobar restricciones por rol.</p>
+
+            <div class="d-flex flex-wrap gap-2 mt-3">
+                <a asp-action="Admin" class="btn btn-dark">Area de administrador</a>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark">Volver al inicio</a>
+            </div>
+        </aside>
+    </div>
+</section>

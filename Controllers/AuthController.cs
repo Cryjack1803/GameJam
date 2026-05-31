@@ -8,6 +8,9 @@ namespace Tarea_01.Controllers;
 
 public class AuthController : Controller
 {
+    private const string SessionStartedAtKey = "Session.StartedAt";
+    private const string SessionUserRoleKey = "Session.UserRole";
+
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
 
@@ -62,7 +65,14 @@ public class AuthController : Controller
         if (userRoles.Count > 0)
         {
             claims.Add(new Claim(ClaimTypes.Role, userRoles[0]));
+            HttpContext.Session.SetString(SessionUserRoleKey, userRoles[0]);
         }
+        else
+        {
+            HttpContext.Session.Remove(SessionUserRoleKey);
+        }
+
+        HttpContext.Session.SetString(SessionStartedAtKey, DateTime.UtcNow.ToString("O"));
 
         await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);
         TempData["AuthMessage"] = $"Bienvenido, {user.FullName}.";
@@ -110,6 +120,8 @@ public class AuthController : Controller
         }
 
         await _userManager.AddToRoleAsync(user, "Cliente");
+        HttpContext.Session.SetString(SessionStartedAtKey, DateTime.UtcNow.ToString("O"));
+        HttpContext.Session.SetString(SessionUserRoleKey, "Cliente");
         await _signInManager.SignInWithClaimsAsync(user, isPersistent: false, new[]
         {
             new Claim(ClaimTypes.GivenName, user.FullName),
@@ -126,6 +138,7 @@ public class AuthController : Controller
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
+        HttpContext.Session.Clear();
         TempData["AuthMessage"] = "La sesion se cerro correctamente.";
         return RedirectToAction("Index", "Home");
     }
