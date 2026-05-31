@@ -1,5 +1,8 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http
+@{
     ViewData["Title"] = "Inicio";
+    var currentUser = Context.Session.GetString("Auth.UserName");
+    var currentRole = Context.Session.GetString("Auth.UserRole");
 }
 
 <section class="hero-panel">
@@ -13,7 +16,16 @@
         <div class="hero-actions">
             <a class="btn btn-dark btn-lg" href="#modulos">Ver modulos</a>
             <a class="btn btn-outline-dark btn-lg" href="#vision">Ver objetivo del proyecto</a>
+            <a class="btn btn-success btn-lg" asp-controller="Auth" asp-action="Login">Probar login</a>
         </div>
+
+        @if (!string.IsNullOrWhiteSpace(currentUser))
+        {
+            <div class="session-banner">
+                <strong>Sesion activa:</strong> @currentUser
+                <span>Rol actual: @currentRole</span>
+            </div>
+        }
     </div>
 
     <div class="hero-stats">
