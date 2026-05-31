@@ -6,6 +6,11 @@ public class SalesHistoryStore
 {
     private readonly List<SaleRecordViewModel> _sales = new();
 
+    public IReadOnlyList<SaleRecordViewModel> GetAll()
+    {
+        return _sales.OrderByDescending(sale => sale.CreatedAt).ToList();
+    }
+
     public IReadOnlyList<SaleRecordViewModel> GetRecent(int take = 5)
     {
         return _sales.OrderByDescending(sale => sale.CreatedAt).Take(take).ToList();
