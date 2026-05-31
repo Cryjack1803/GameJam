@@ -1,23 +1,99 @@
 ﻿@{
-    ViewData["Title"] = "GameJam 2026";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="container mt-5">
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h2><i class="fa fa-gamepad"></i> Bienvenido al GameJam 2026</h2>
-        </div>
-        <div class="card-body">
-            <p class="lead">¡Participa en el evento más grande de desarrollo de videojuegos! Regístrate, comparte tus
-                hobbies y compite por premios.</p>
-                <ul>
-                    <li>Fecha: 15 de Abril, 2026</li>
-                    <li>Lugar: Online</li>
-                    <li>Inscripción: Abierta</li>
-                </ul>
-                <a href="/GameJam/Register" class="btn btn-success btn-lg mt-3">
-                    <i class="fa fa-user-plus"></i> Registrar Jugador
-                </a>
-            </div>
+<section class="hero-panel">
+    <div class="hero-copy">
+        <span class="eyebrow">MiniMarket inteligente</span>
+        <h1>Controla ventas, stock y proyecciones desde una sola plataforma.</h1>
+        <p>
+            Esta primera entrega concentra la portada del sistema del minimarket y deja visibles los
+            modulos que se iran integrando: catalogo, contacto, sesiones, reportes y prediccion de ventas.
+        </p>
+        <div class="hero-actions">
+            <a class="btn btn-dark btn-lg" href="#modulos">Ver modulos</a>
+            <a class="btn btn-outline-dark btn-lg" href="#vision">Ver objetivo del proyecto</a>
         </div>
     </div>
+
+    <div class="hero-stats">
+        <article>
+            <span class="stat-label">Ventas monitoreadas</span>
+            <strong>24/7</strong>
+            <p>Seguimiento continuo de movimiento comercial y comportamiento de compra.</p>
+        </article>
+        <article>
+            <span class="stat-label">Enfoque academico</span>
+            <strong>MVC + ML.NET</strong>
+            <p>Base web tradicional con espacio para APIs, recomendacion y agente de IA.</p>
+        </article>
+        <article>
+            <span class="stat-label">Meta final</span>
+            <strong>Go Live</strong>
+            <p>Aplicativo funcional listo para desplegar cuando completes la ultima fase.</p>
+        </article>
+    </div>
+</section>
+
+<section class="home-section" id="modulos">
+    <div class="section-heading">
+        <span class="eyebrow">Primer avance</span>
+        <h2>Base funcional del sistema</h2>
+    </div>
+
+    <div class="feature-grid">
+        <article class="feature-card">
+            <h3>Contacto</h3>
+            <p>Formulario para mensajes, consultas y soporte del minimarket.</p>
+        </article>
+        <article class="feature-card">
+            <h3>Catalogo</h3>
+            <p>Listado de productos, categorias, precios y disponibilidad.</p>
+        </article>
+        <article class="feature-card">
+            <h3>Login y sesiones</h3>
+            <p>Acceso por usuario, control de sesion y personalizacion por rol.</p>
+        </article>
+        <article class="feature-card">
+            <h3>Base de datos</h3>
+            <p>Persistencia de productos, ventas, clientes y mensajes.</p>
+        </article>
+        <article class="feature-card">
+            <h3>Render web</h3>
+            <p>Vistas MVC listas para mostrar el sistema de manera clara y profesional.</p>
+        </article>
+        <article class="feature-card">
+            <h3>Ramas por HU</h3>
+            <p>Desarrollo organizado con una rama por funcionalidad antes de mergear a main.</p>
+        </article>
+    </div>
+</section>
+
+<section class="home-section accent-section" id="vision">
+    <div class="section-heading">
+        <span class="eyebrow">Segundo y tercer avance</span>
+        <h2>Escalado hacia analitica e inteligencia artificial</h2>
+    </div>
+
+    <div class="roadmap-grid">
+        <article>
+            <h3>API y analitica</h3>
+            <p>Endpoints para productos, ventas y consultas del sistema administrativo.</p>
+        </article>
+        <article>
+            <h3>ML.NET</h3>
+            <p>Prediccion de ventas y clasificacion de comportamiento de compra.</p>
+        </article>
+        <article>
+            <h3>Recomendacion</h3>
+            <p>Sugerencias de productos a partir del historial o categorias relacionadas.</p>
+        </article>
+        <article>
+            <h3>Agente de IA</h3>
+            <p>Asistente apoyado por Semantic Kernel y LLM para consultas del negocio.</p>
+        </article>
+    </div>
+    <div class="project-note">
+        <strong>Objetivo:</strong> construir un minimarket web con operacion comercial real y una capa de prediccion para apoyar decisiones del cliente.
+    </div>
+</section>
