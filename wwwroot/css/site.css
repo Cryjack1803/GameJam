@@ -277,6 +277,102 @@ body {
   font-weight: 700;
 }
 
+.catalog-shell {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.catalog-hero,
+.catalog-filter,
+.catalog-card,
+.catalog-detail-main,
+.catalog-detail-side {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+}
+
+.catalog-hero,
+.catalog-filter,
+.catalog-detail-main,
+.catalog-detail-side {
+  padding: 1.75rem;
+}
+
+.catalog-filter-form {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr auto;
+  gap: 0.85rem;
+  align-items: end;
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.catalog-card {
+  padding: 1.25rem;
+}
+
+.catalog-card h3,
+.catalog-detail-main h1 {
+  margin-top: 0.75rem;
+}
+
+.catalog-meta,
+.catalog-stock,
+.catalog-empty,
+.catalog-detail-main p,
+.catalog-detail-side li {
+  color: var(--muted);
+}
+
+.catalog-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.catalog-price {
+  display: block;
+  margin-top: 1rem;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.catalog-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.catalog-stock.low {
+  color: #b25b28;
+  font-weight: 700;
+}
+
+.catalog-empty {
+  padding: 2rem;
+  text-align: center;
+}
+
+.catalog-detail-layout {
+  display: grid;
+  grid-template-columns: 1.4fr 0.8fr;
+  gap: 1rem;
+}
+
+.catalog-detail-side ul {
+  padding-left: 1.2rem;
+  margin-bottom: 0;
+}
+
 .form-floating > .form-control-plaintext::placeholder,
 .form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
@@ -291,6 +387,7 @@ body {
 @media (max-width: 991.98px) {
   .hero-panel,
   .auth-shell,
+  .catalog-detail-layout,
   .feature-grid,
   .roadmap-grid {
     grid-template-columns: 1fr;
@@ -299,6 +396,14 @@ body {
   .hero-copy {
     padding: 2rem;
   }
+
+  .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .catalog-filter-form {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 575.98px) {
@@ -306,6 +411,11 @@ body {
   .hero-stats,
   .auth-card,
   .auth-side,
+  .catalog-hero,
+  .catalog-filter,
+  .catalog-card,
+  .catalog-detail-main,
+  .catalog-detail-side,
   .feature-card,
   .roadmap-grid article,
   .project-note {
@@ -314,5 +424,9 @@ body {
 
   .hero-copy h1 {
     max-width: none;
+  }
+
+  .catalog-grid {
+    grid-template-columns: 1fr;
   }
 }
