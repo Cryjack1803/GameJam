@@ -59,20 +59,49 @@ public class PaymentController : Controller
             return RedirectToAction("Index", "Cart");
         }
 
+        pendingPayment.PreferenceId = preferenceResult.PreferenceId;
         _paymentSessionService.Save(pendingPayment);
         return Redirect(preferenceResult.CheckoutUrl);
     }
 
     [AllowAnonymous]
     [HttpGet]
-    public IActionResult MercadoPagoSuccess(string? external_reference)
+    public async Task<IActionResult> MercadoPagoSuccess(long? payment_id, long? collection_id, string? external_reference, CancellationToken cancellationToken)
     {
         var pendingPayment = _paymentSessionService.Get();
+        var mercadoPagoPaymentId = payment_id ?? collection_id;
 
         if (pendingPayment is null ||
             !string.Equals(pendingPayment.ExternalReference, external_reference, StringComparison.OrdinalIgnoreCase))
         {
             TempData["CartMessage"] = "No se encontro una compra pendiente para confirmar.";
+            return RedirectToAction("Index", "Cart");
+        }
+
+        if (!mercadoPagoPaymentId.HasValue)
+        {
+            TempData["CartMessage"] = "Mercado Pago no devolvio un identificador de pago para validar la compra.";
+            return RedirectToAction("Index", "Cart");
+        }
+
+        var verificationResult = await _mercadoPagoPaymentService.VerifyApprovedPaymentAsync(mercadoPagoPaymentId.Value, cancellationToken);
+
+        if (!verificationResult.Succeeded)
+        {
+            TempData["CartMessage"] = verificationResult.ErrorMessage;
+            return RedirectToAction("Index", "Cart");
+        }
+
+        if (!string.Equals(verificationResult.ExternalReference, pendingPayment.ExternalReference, StringComparison.OrdinalIgnoreCase))
+        {
+            TempData["CartMessage"] = "La referencia del pago aprobado no coincide con la compra pendiente.";
+            return RedirectToAction("Index", "Cart");
+        }
+
+        if (!string.IsNullOrWhiteSpace(pendingPayment.PreferenceId) &&
+            !string.Equals(verificationResult.PreferenceId, pendingPayment.PreferenceId, StringComparison.OrdinalIgnoreCase))
+        {
+            TempData["CartMessage"] = "La preferencia confirmada por Mercado Pago no coincide con la compra pendiente.";
             return RedirectToAction("Index", "Cart");
         }
 

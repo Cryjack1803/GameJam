@@ -84,6 +84,40 @@ public class MercadoPagoPaymentService
         return MercadoPagoPreferenceResult.Success(checkoutUrl, preference.Id);
     }
 
+    public async Task<MercadoPagoPaymentVerificationResult> VerifyApprovedPaymentAsync(long paymentId, CancellationToken cancellationToken = default)
+    {
+        if (!IsConfigured)
+        {
+            return MercadoPagoPaymentVerificationResult.Fail("Mercado Pago no esta configurado. Define AccessToken y AppBaseUrl.");
+        }
+
+        using var message = new HttpRequestMessage(HttpMethod.Get, $"https://api.mercadopago.com/v1/payments/{paymentId}");
+        message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _options.AccessToken);
+
+        using var response = await _httpClient.SendAsync(message, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+            return MercadoPagoPaymentVerificationResult.Fail($"No se pudo validar el pago en Mercado Pago: {responseBody}");
+        }
+
+        var payment = await response.Content.ReadFromJsonAsync<MercadoPagoPaymentResponse>(cancellationToken: cancellationToken);
+
+        if (payment is null)
+        {
+            return MercadoPagoPaymentVerificationResult.Fail("Mercado Pago no devolvio un pago valido para confirmar la compra.");
+        }
+
+        if (!string.Equals(payment.Status, "approved", StringComparison.OrdinalIgnoreCase))
+        {
+            var paymentStatus = string.IsNullOrWhiteSpace(payment.Status) ? "desconocido" : payment.Status;
+            return MercadoPagoPaymentVerificationResult.Fail($"El pago en Mercado Pago todavia no esta aprobado. Estado actual: {paymentStatus}.");
+        }
+
+        return MercadoPagoPaymentVerificationResult.Success(payment.ExternalReference, payment.Order?.Id, payment.Status);
+    }
+
     public sealed class MercadoPagoPreferenceResult
     {
         public bool Succeeded { get; private set; }
@@ -109,6 +143,38 @@ public class MercadoPagoPaymentService
             return new MercadoPagoPreferenceResult
             {
                 Succeeded = false,
+                ErrorMessage = errorMessage
+            };
+        }
+    }
+
+    public sealed class MercadoPagoPaymentVerificationResult
+    {
+        public bool Succeeded { get; private set; }
+
+        public string ExternalReference { get; private set; } = string.Empty;
+
+        public string PreferenceId { get; private set; } = string.Empty;
+
+        public string Status { get; private set; } = string.Empty;
+
+        public string ErrorMessage { get; private set; } = string.Empty;
+
+        public static MercadoPagoPaymentVerificationResult Success(string externalReference, string preferenceId, string status)
+        {
+            return new MercadoPagoPaymentVerificationResult
+            {
+                Succeeded = true,
+                ExternalReference = externalReference,
+                PreferenceId = preferenceId,
+                Status = status
+            };
+        }
+
+        public static MercadoPagoPaymentVerificationResult Fail(string errorMessage)
+        {
+            return new MercadoPagoPaymentVerificationResult
+            {
                 ErrorMessage = errorMessage
             };
         }
@@ -172,5 +238,23 @@ public class MercadoPagoPaymentService
 
         [JsonPropertyName("sandbox_init_point")]
         public string SandboxInitPoint { get; set; } = string.Empty;
+    }
+
+    private sealed class MercadoPagoPaymentResponse
+    {
+        [JsonPropertyName("status")]
+        public string Status { get; set; } = string.Empty;
+
+        [JsonPropertyName("external_reference")]
+        public string ExternalReference { get; set; } = string.Empty;
+
+        [JsonPropertyName("order")]
+        public MercadoPagoPaymentOrder? Order { get; set; }
+    }
+
+    private sealed class MercadoPagoPaymentOrder
+    {
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = string.Empty;
     }
 }
