@@ -14,6 +14,7 @@ builder.Services.AddSingleton<ProductInventoryStore>();
 builder.Services.AddSingleton<SalesHistoryStore>();
 builder.Services.AddSingleton<SalesForecastService>();
 builder.Services.AddSingleton<ProductRecommendationService>();
+builder.Services.AddSingleton<AgentService>();
 builder.Services.AddSingleton<PaymentSessionService>();
 builder.Services.AddScoped<CartSessionService>();
 builder.Services.AddScoped<SalesCheckoutService>();
